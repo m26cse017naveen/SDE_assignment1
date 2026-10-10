@@ -1,59 +1,60 @@
-    # B+ Tree Implementation and Performance Comparison
+# B+ Tree Implementation — Final Report
 
-**Student:** Naveen Pratap
-**Course/section:** Mtech. CSE  
-**Dataset:** `bplus_tree_data_10m.csv` (10,000,000 records)
+## 1. Introduction
 
-## 1. Objective
+For this assignment, I implemented and compared three B+ Tree storage approaches:
 
-Implement and compare a memory-only B+ Tree, a disk-only B+ Tree, and a disk-backed B+ Tree with an in-memory buffer pool.
+1. **Memory-only B+ Tree** — tree data is kept in RAM.
+2. **Disk-only B+ Tree** — tree pages are stored on disk.
+3. **Memory + Disk B+ Tree** — disk pages are used with an in-memory cache.
 
-## 2. Assumptions and design
+I ran the program on the provided CSV dataset containing **10,000,000 records**. Each record contains a unique alphanumeric `key` and a `payload`. I compared insertion time, average search time, storage size, tree height, disk page reads and writes, and cache hits where applicable.
 
-- Key: unique alphanumeric string, shorter than 32 bytes.
-- Payload: random string, shorter than 128 bytes.
-- Maximum keys per node: 31; overflow triggers a split.
-- Disk page: fixed-size binary `Node`, with the exact byte size printed by the program.
-- Disk-only cache: 1 page; hybrid cache: 256 pages.
-- Leaf pages are linked; successful searches also verify the payload.
-- Search latency is the mean across up to 10,000 existing keys.
+## 2. Dataset and assumptions
 
-## 3. Experimental setup
+| Item | Value |
+|---|---|
+| Number of records | 10,000,000 |
+| CSV columns | `key`, `payload` |
+| Node/page size reported by program | 5,400 bytes |
+| Maximum keys per node | 31 |
+| Tree height reported | 6 for all implementations |
 
-Fill these in after running the benchmark on the actual dataset.
+The values above are taken from the program output. The storage size below is the value reported by the program and may not include all process memory, allocator overhead, or operating-system caching.
 
-| Item                   | Value                 |
-| ---------------------- | --------------------- |
-| CPU                    | [Fill in]             |
-| RAM                    | [Fill in]             |
-| Operating system       | [Fill in]             |
-| Compiler and version   | [Fill in]             |
-| Dataset records loaded | [From program output] |
-| Node/page size         | [From program output] |
+## 3. Final benchmark results
 
-## 4. Results
+| Metric | Memory-only | Disk-only | Memory + Disk |
+|---|---:|---:|---:|
+| Insertion time | 33.597 s | 573.815 s | 491.811 s |
+| Average search time | 3.465 µs/key | 30.626 µs/key | 24.454 µs/key |
+| Tree pages/nodes | 4,820,269 | 482,069 | 482,069 |
+| Storage size | 2,618,598,808 bytes (2,497.290 MiB) | 2,603,172,600 bytes (2,482.579 MiB) | 2,603,172,600 bytes (2,482.579 MiB) |
+| Tree height | 6 | 6 | 6 |
+| Disk page reads | 0 | 50,845,201 | 27,451,095 |
+| Disk page writes | 0 | 10,964,096 | 10,931,391 |
+| Cache hits | 0 | 157 | 23,394,263 |
 
-Copy the actual full-run values from `benchmark_results.csv`.
+## 4. Observations
 
-| Metric                       | Memory-only | Disk-only | Memory + Disk |
-| ---------------------------- | ----------: | --------: | ------------: |
-| Insertion time (s)           |         [ ] |       [ ] |           [ ] |
-| Average search time (µs/key) |         [ ] |       [ ] |           [ ] |
-| Pages/nodes                  |         [ ] |       [ ] |           [ ] |
-| Storage/RAM estimate (bytes) |         [ ] |       [ ] |           [ ] |
-| Tree height (levels)         |         [ ] |       [ ] |           [ ] |
-| Disk page reads              |           0 |       [ ] |           [ ] |
-| Disk page writes             |           0 |       [ ] |           [ ] |
-| Cache hits                   |           0 |       [ ] |           [ ] |
+- **Insertion time:** The memory-only version took the least time (33.597 seconds). The disk-only version took 573.815 seconds, and the hybrid version took 491.811 seconds. In this run, the disk-backed approaches took longer, consistent with the extra work involved in page I/O.
+- **Search time:** The memory-only version had the lowest average search time at 3.465 µs/key. The hybrid version averaged 24.454 µs/key, which was faster than the disk-only result of 30.626 µs/key.
+- **Disk I/O and caching:** The memory-only implementation reported no disk page reads or writes. The disk-only implementation reported 50,845,201 reads. The hybrid implementation reported 27,451,095 reads and 23,394,263 cache hits, showing that its cache was used frequently during the run.
+- **Tree height:** All three versions reported a height of 6. Therefore, the measured timing differences are not explained by a difference in the reported height.
+- **Storage size:** The disk-only and hybrid versions reported 2,603,172,600 bytes, while the memory-only version reported 2,618,598,808 bytes. These are the program's reported figures rather than a complete measurement of total system memory use.
 
-## 5. Discussion
+## 5. Conclusion
 
-Use the measured results, not assumed values. The memory-only configuration avoids application-level disk-page reads/writes but needs RAM for every node. The disk-only configuration limits its buffer to one page and is expected to perform more page I/O. The hybrid configuration uses a 256-page LRU cache, which can reduce I/O when pages are reused. Operating-system caching and hardware affect elapsed times, so compare runs on the same machine.
+Based on this run, the memory-only B+ Tree was the fastest for both insertion and search, but it requires the tree to remain in memory. The disk-only version was the slowest and recorded the highest number of page reads. The hybrid version performed better than disk-only and recorded many cache hits, suggesting that keeping frequently accessed pages in memory can reduce disk access. The best approach depends on the trade-off between speed, available RAM, and disk-based storage.
 
-## 6. Limitations
+## 6. Reproducibility notes
 
-This is a single-threaded educational implementation with fixed-size pages and a simple LRU cache. Memory usage is an estimate, not process RSS. Disk I/O counters measure the program's page operations; the operating system may cache physical file access.
+These figures were transcribed from the terminal output for the full 10-million-record run. Timings may vary with hardware, compiler options, and disk-cache conditions. For a fair comparison, run all implementations on the same machine with the same dataset and compiler settings.
 
-## 7. Conclusion
+For submission, include:
+- `bplus_tree.cpp`
+- `benchmark_results_final.csv`
+- this completed report
+- `README.md`
 
-[Summarize which configuration was fastest for insertion and search, the memory/disk trade-off, and how measured I/O explains the outcome.]
+**Note:** The values in this report should match the benchmark CSV and the terminal output. No new benchmark run was performed while preparing this report.

@@ -1,0 +1,4 @@
+mode,records,insertion_seconds,avg_search_microseconds,pages,storage_bytes,estimated_height,disk_reads,disk_writes,cache_hits
+memory,2500,0.00203719,0.684191,121,657272,3,0,0,0
+disk,2500,0.0121442,3.34039,121,653400,3,14197,2706,66
+hybrid,2500,0.0022684,0.80803,121,653400,3,0,121,14263

@@ -1,4 +1,4 @@
-mode,records,insertion_seconds,avg_search_microseconds,pages,storage_bytes,estimated_height,disk_reads,disk_writes,cache_hits
-memory,2500,0.00203719,0.684191,121,657272,3,0,0,0
-disk,2500,0.0121442,3.34039,121,653400,3,14197,2706,66
-hybrid,2500,0.0022684,0.80803,121,653400,3,0,121,14263
+implementation,records_loaded,node_or_page_size_bytes,maximum_keys_per_node,insertion_time_seconds,average_search_time_microseconds_per_key,tree_pages_or_nodes,storage_size_bytes,storage_size_mib,tree_height,disk_page_reads,disk_page_writes,cache_hits
+Memory-only B+ Tree,10000000,5400,31,33.597,3.465,4820269,2618598808,2497.29,6,0,0,0
+Disk-only B+ Tree,10000000,5400,31,573.815,30.626,482069,2603172600,2482.579,6,50845201,10964096,157
+Memory + Disk B+ Tree,10000000,5400,31,491.811,24.454,482069,2603172600,2482.579,6,27451095,10931391,23394263

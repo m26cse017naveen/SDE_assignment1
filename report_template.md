@@ -47,14 +47,3 @@ The values above are taken from the program output. The storage size below is th
 
 Based on this run, the memory-only B+ Tree was the fastest for both insertion and search, but it requires the tree to remain in memory. The disk-only version was the slowest and recorded the highest number of page reads. The hybrid version performed better than disk-only and recorded many cache hits, suggesting that keeping frequently accessed pages in memory can reduce disk access. The best approach depends on the trade-off between speed, available RAM, and disk-based storage.
 
-## 6. Reproducibility notes
-
-These figures were transcribed from the terminal output for the full 10-million-record run. Timings may vary with hardware, compiler options, and disk-cache conditions. For a fair comparison, run all implementations on the same machine with the same dataset and compiler settings.
-
-For submission, include:
-- `bplus_tree.cpp`
-- `benchmark_results_final.csv`
-- this completed report
-- `README.md`
-
-**Note:** The values in this report should match the benchmark CSV and the terminal output. No new benchmark run was performed while preparing this report.
